@@ -1,39 +1,37 @@
-import User from '../models/User.js';
+import User from '../models/userModel.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+const JWT_SECRET = 'iphone_secret';
+
 export const register = async (req, res) => {
+  const { name, email, password } = req.body;
   try {
-    const { username, email, password } = req.body;
+    const userExists = await User.findOne({ email });
+    if (userExists) return res.status(400).json({ message: 'Email đã tồn tại' });
 
-    // Kiểm tra trùng email
-    const userExist = await User.findOne({ email });
-    if (userExist) return res.status(400).json({ message: 'Email đã được sử dụng' });
+    const hashed = await bcrypt.hash(password, 10);
+    const user = new User({ name, email, password: hashed });
+    await user.save();
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword });
-    await newUser.save();
-
-    res.status(201).json({ message: 'Đăng ký thành công!' });
-  } catch (err) {
-    res.status(500).json({ message: 'Lỗi server', error: err.message });
+    res.status(201).json({ message: 'Đăng ký thành công' });
+  } catch {
+    res.status(500).json({ message: 'Lỗi server khi đăng ký' });
   }
 };
 
 export const login = async (req, res) => {
+  const { email, password } = req.body;
   try {
-    const { email, password } = req.body;
-
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Email không tồn tại' });
+    if (!user) return res.status(400).json({ message: 'Sai email hoặc mật khẩu' });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Sai mật khẩu' });
+    if (!isMatch) return res.status(400).json({ message: 'Sai email hoặc mật khẩu' });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-
-    res.json({ message: 'Đăng nhập thành công!', token, user: { id: user._id, username: user.username, email: user.email } });
-  } catch (err) {
-    res.status(500).json({ message: 'Lỗi server', error: err.message });
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+  } catch {
+    res.status(500).json({ message: 'Lỗi server khi đăng nhập' });
   }
 };
