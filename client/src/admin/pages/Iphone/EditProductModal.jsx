@@ -34,20 +34,29 @@ const EditProductModal = ({ visible, onCancel, onUpdate, product }) => {
         <Form.Item name="model" label="Model" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
+
         <Form.Item name="color" label="Màu sắc" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
+
         <Form.Item name="storage" label="Dung lượng" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
+
         <Form.Item name="price" label="Giá" rules={[{ required: true }]}>
           <InputNumber min={0} style={{ width: '100%' }} />
         </Form.Item>
+
         <Form.Item name="isLocked" label="Khoá mạng" rules={[{ required: true }]}>
           <Select>
             <Option value={true}>Khoá mạng</Option>
             <Option value={false}>Quốc tế</Option>
           </Select>
+        </Form.Item>
+
+        {/* Trường thêm ảnh */}
+        <Form.Item name="image" label="Ảnh sản phẩm (URL)">
+          <Input placeholder="Nhập URL ảnh" />
         </Form.Item>
       </Form>
     </Modal>
