@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
@@ -81,6 +80,18 @@ const Products = () => {
   };
 
   const columns = [
+    {
+      title: 'Ảnh',
+      dataIndex: 'image',
+      key: 'image',
+      render: (url) => (
+        <img
+          src={url}
+          alt="Ảnh"
+          style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 4 }}
+        />
+      ),
+    },
     {
       title: 'Model',
       dataIndex: 'model',
@@ -197,6 +208,10 @@ const Products = () => {
               <Option value={true}>Khoá mạng</Option>
               <Option value={false}>Quốc tế</Option>
             </Select>
+          </Form.Item>
+
+          <Form.Item name="image" label="URL Ảnh">
+            <Input placeholder="Dán đường dẫn ảnh sản phẩm" />
           </Form.Item>
         </Form>
       </Modal>
