@@ -5,6 +5,8 @@ import authRoutes from './routes/auth.js';
 import iphoneRoutes from './routes/iphoneRoutes.js';
 import cartRoutes from './routes/cart.js'; 
 import cors from 'cors';
+import orderRoutes from './routes/orderRoutes.js';
+import user from './routes/user.js';
 dotenv.config();
 const app = express();
 
@@ -18,6 +20,8 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/api/auth', authRoutes);
 app.use('/api/iphones', iphoneRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/users', user);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));

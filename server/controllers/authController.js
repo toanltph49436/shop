@@ -35,3 +35,11 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Lỗi server khi đăng nhập' });
   }
 };
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().sort({ createdAt: -1 }); // lấy user mới nhất trước
+    res.json(users);
+  } catch {
+    res.status(500).json({ message: 'Lỗi server khi lấy danh sách người dùng' });
+  }
+};

@@ -1,9 +1,8 @@
 // server/controllers/iphoneController.js
 import iPhone from '../models/iphoneModel.js';
-
 export const getAlliPhones = async (req, res) => {
   try {
-    const { model, color, storage, condition, isLocked, page = 1, limit = 10, sort } = req.query;
+    const { model, color, storage, condition, isLocked, sort } = req.query;
 
     const filter = {};
 
@@ -13,33 +12,19 @@ export const getAlliPhones = async (req, res) => {
     if (condition) filter.condition = condition;
     if (isLocked !== undefined) filter.isLocked = isLocked === 'true';
 
-    // Xử lý phân trang
-    const pageNumber = parseInt(page) || 1;
-    const limitNumber = parseInt(limit) || 10;
-    const skip = (pageNumber - 1) * limitNumber;
-
-    // Xử lý sắp xếp
+    // Sắp xếp
     let sortOption = {};
     if (sort === 'price_asc') sortOption.price = 1;
     else if (sort === 'price_desc') sortOption.price = -1;
     else if (sort === 'name_asc') sortOption.model = 1;
     else if (sort === 'name_desc') sortOption.model = -1;
 
-    // Truy vấn
-    const total = await iPhone.countDocuments(filter);
-    const phones = await iPhone.find(filter)
-      .sort(sortOption)
-      .skip(skip)
-      .limit(limitNumber);
+    // Truy vấn không phân trang
+    const phones = await iPhone.find(filter).sort(sortOption);
 
-    res.json({
-      total,
-      page: pageNumber,
-      totalPages: Math.ceil(total / limitNumber),
-      data: phones,
-    });
+    res.json(phones); // 👈 trả thẳng danh sách không phân trang
   } catch (err) {
-    res.status(500).json({ message: 'Lỗi server khi lọc/phân trang iPhone' });
+    res.status(500).json({ message: 'Lỗi server khi lọc iPhone' });
   }
 };
 
