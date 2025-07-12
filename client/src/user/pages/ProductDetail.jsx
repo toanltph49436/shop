@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
+// ...import như cũ
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [phone, setPhone] = useState(null);
 
   useEffect(() => {
@@ -13,6 +16,28 @@ const ProductDetail = () => {
   }, [id]);
 
   if (!phone) return <p style={{ textAlign: 'center' }}>🔄 Đang tải...</p>;
+
+  const handleAddToCart = () => {
+    const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const alreadyInCart = existingCart.find(item => item._id === phone._id);
+    if (!alreadyInCart) {
+      existingCart.push(phone);
+      localStorage.setItem('cart', JSON.stringify(existingCart));
+      alert('✅ Đã thêm vào giỏ hàng!');
+    } else {
+      alert('⚠️ Sản phẩm đã có trong giỏ hàng!');
+    }
+  };
+
+  const handleBuyNow = () => {
+    const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const alreadyInCart = existingCart.find(item => item._id === phone._id);
+    if (!alreadyInCart) {
+      existingCart.push(phone);
+      localStorage.setItem('cart', JSON.stringify(existingCart));
+    }
+    navigate('/checkout'); // ✅ điều hướng sang trang thanh toán
+  };
 
   return (
     <div style={{ padding: '40px 20px', maxWidth: 1200, margin: '0 auto' }}>
@@ -66,6 +91,7 @@ const ProductDetail = () => {
 
           <div style={{ display: 'flex', gap: 16, marginTop: 30 }}>
             <button
+              onClick={handleAddToCart}
               style={{
                 padding: '12px 24px',
                 background: '#f57c00',
@@ -79,6 +105,7 @@ const ProductDetail = () => {
               🛒 Thêm vào giỏ
             </button>
             <button
+              onClick={handleBuyNow}
               style={{
                 padding: '12px 24px',
                 background: '#e60023',

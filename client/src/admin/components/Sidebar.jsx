@@ -28,12 +28,14 @@ const Sidebar = () => {
 <Menu.Item key="/admin/products" icon={<ShoppingOutlined />}>
   <Link to="/admin/products">Products</Link>
 </Menu.Item>
-<Menu.Item key="/admin/cart" icon={<ShoppingCartOutlined />}>
-  <Link to="/admin/cart">Orders</Link>
+<Menu.Item key="/admin/orders" icon={<ShoppingCartOutlined />}>
+  <Link to="/admin/orders">Orders</Link>
 </Menu.Item>
+
 <Menu.Item key="/admin/users" icon={<UserOutlined />}>
   <Link to="/admin/users">Users</Link>
 </Menu.Item>
+
 
       </Menu>
     </div>

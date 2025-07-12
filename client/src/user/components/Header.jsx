@@ -1,11 +1,26 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+// src/components/Header.jsx
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => {
-  // Giả lập user đăng nhập (sau này có thể dùng context hoặc redux để xử lý thực tế)
-  const user = {
-    name: 'Toàn Lê',
-    avatar: 'https://i.pravatar.cc/40',
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {
+        setUser(null);
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login');
   };
 
   return (
@@ -29,7 +44,7 @@ const Header = () => {
         <div>
           <h2 style={{ margin: 0 }}>
             <Link to="/" style={{ color: '#fff', textDecoration: 'none' }}>
-              📱 iPhone Shop
+              📱 iXphone
             </Link>
           </h2>
         </div>
@@ -45,26 +60,32 @@ const Header = () => {
 
         {/* User Info */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <img
-            src={user.avatar}
-            alt="avatar"
-            style={{ width: 35, height: 35, borderRadius: '50%' }}
-          />
-          <span>{user.name}</span>
-          <button
-            onClick={() => alert('Bạn đã đăng xuất!')}
-            style={{
-              marginLeft: 10,
-              background: '#ff4d4f',
-              border: 'none',
-              color: '#fff',
-              padding: '6px 12px',
-              borderRadius: 5,
-              cursor: 'pointer'
-            }}
-          >
-            Đăng xuất
-          </button>
+          {user ? (
+            <>
+              <img
+                src="https://i.pravatar.cc/40"
+                alt="avatar"
+                style={{ width: 35, height: 35, borderRadius: '50%' }}
+              />
+              <span>{user.name}</span>
+              <button
+                onClick={handleLogout}
+                style={{
+                  marginLeft: 10,
+                  background: '#ff4d4f',
+                  border: 'none',
+                  color: '#fff',
+                  padding: '6px 12px',
+                  borderRadius: 5,
+                  cursor: 'pointer'
+                }}
+              >
+                Đăng xuất
+              </button>
+            </>
+          ) : (
+            <Link to="/login" style={linkStyle}>Đăng nhập</Link>
+          )}
         </div>
       </nav>
     </header>
